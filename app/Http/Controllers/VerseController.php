@@ -56,8 +56,13 @@ class VerseController extends Controller
         }
         $id_book = $book->id;
 
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
     
     /**
@@ -116,8 +121,13 @@ class VerseController extends Controller
             , 404);
         }
 
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '=', $verse)->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -187,7 +197,36 @@ class VerseController extends Controller
                 'message' => "This verse is bigger than compost verse. Try with the shorter verse!"]
             , 404);
         }
+       
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '>=', $verse)->where('num', '<=', $compost_verse)->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $lang
+     * @return \Illuminate\Http\Response
+     */
+    public function getHeaderFooter() {
+        
+        $lang = DB::table('languages')->select('language', 'encode', 'country')->get();
+        $books = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
+        $result = array(
+            'header' => array(
+                'lang' => $lang,
+            ),
+            'footer' => array(
+                'books' => $books
+            )
+        );
+
+        return $result;
     }
 }

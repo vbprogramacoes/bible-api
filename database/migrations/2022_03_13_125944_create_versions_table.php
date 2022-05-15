@@ -20,7 +20,9 @@ class CreateVersionsTable extends Migration
             $table->id();
             $table->string('abbreviation', 10);
             $table->string('version', 250);
-            $table->bigInteger('id_lang')->length(20);
+            $table->string('language', 250);
+            $table->string('language_format', 20);
+            $table->string('country', 250);       
         });
     }
 

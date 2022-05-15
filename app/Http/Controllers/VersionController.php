@@ -15,8 +15,13 @@ class VersionController extends Controller
     public function index()
     {
 
-        $abbver = DB::table('versions')->select('abbreviation', 'version')->get();
-        return response()->json($abbver, 200);
+        $data         = DB::table('versions')->select('abbreviation', 'version', 'language', 'language_format', 'country')->get();
+        $header_footer  = $this->getHeaderFooter();
+        $result         = array(
+                            'header_footer' => $header_footer,
+                            'data'          => $data
+                        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -41,9 +46,13 @@ class VersionController extends Controller
                 ['message' => 'Don\'t have this version. Please try /versions']
             , 404);
         }
-        
-        $data = DB::table('versions')->select('abbreviation', 'version')->where('abbreviation', '=', $abbreviation)->get();
-        return response()->json($data, 200);
+        $header_footer  = $this->getHeaderFooter();
+        $data = DB::table('versions')->select('abbreviation', 'version', 'language', 'language_format', 'country')->where('abbreviation', '=', $abbreviation)->get();
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -61,25 +70,35 @@ class VersionController extends Controller
                 'message' => 'You not set language. Please try /languages or /versions']
             , 404);
         }
+           
+        $header_footer  = $this->getHeaderFooter();
+        $data = DB::table('versions')->select('abbreviation', 'version', 'language', 'language_format', 'country')->where('language', '=', $language)->get();
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $lang
+     * @return \Illuminate\Http\Response
+     */
+    public function getHeaderFooter() {
         
-        //VERIFY LANGUAGE EXIST
-        if (!DB::table('languages')->where('language', '=', $language)->exists()) {
+        $lang = DB::table('languages')->select('language', 'encode', 'country')->get();
+        $books = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
+        $result = array(
+            'header' => array(
+                'lang' => $lang,
+            ),
+            'footer' => array(
+                'books' => $books
+            )
+        );
 
-            return response()->json(
-                ['message' => 'Don\'t have version for this language. Please try /languages or /versions']
-            , 404);
-        }
-        
-        $language = DB::table('languages')->select('id', 'language', 'encode', 'country')->where('language', '=', $language)->first();
-        $id_lang = $language->id;
-        if (!DB::table('versions')->where('id_lang', '=', $id_lang)->exists()) {
-
-            return response()->json(
-                ['message' => 'Don\'t have version for this language. Please try /languages or /versions']
-            , 404);
-        }
-        $data = DB::table('versions')->select('abbreviation', 'version')->where('id_lang', '=', $id_lang)->get();
-       
-        return response()->json($data, 200);
+        return $result;
     }
 }

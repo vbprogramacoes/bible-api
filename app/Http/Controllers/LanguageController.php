@@ -14,8 +14,14 @@ class LanguageController extends Controller
      */
     public function index()
     {
+        
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('languages')->select('language', 'encode', 'country')->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -40,6 +46,34 @@ class LanguageController extends Controller
                 ['message' => 'Doesn\'t have this language. Please try /languages!'], 
             404);
         }
-        return response()->json($data, 200);
+        $header_footer  = $this->getHeaderFooter();
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $lang
+     * @return \Illuminate\Http\Response
+     */
+    public function getHeaderFooter() {
+        
+        $lang = DB::table('languages')->select('language', 'encode', 'country')->get();
+        $books = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
+        $result = array(
+            'header' => array(
+                'lang' => $lang,
+            ),
+            'footer' => array(
+                'books' => $books
+            )
+        );
+
+        return $result;
     }
 }

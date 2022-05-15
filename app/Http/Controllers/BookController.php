@@ -14,8 +14,14 @@ class BookController extends Controller
      */
     public function index()
     {
+        
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -51,8 +57,13 @@ class BookController extends Controller
             , 404);
         }
 
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->where('id_lang', '=', $id_lang)->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -75,8 +86,14 @@ class BookController extends Controller
                 ['message' => "Don't have this testament. Please try /books/testament/old or /books/testament/new"]
             , 404);
         }
+        
+        $header_footer  = $this->getHeaderFooter();
         $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'summary')->where('testament', '=', $testament)->get();
-        return response()->json($data, 200);
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
     }
 
     /**
@@ -94,8 +111,35 @@ class BookController extends Controller
             return response()->json([
                 'message' => 'You not set testament or language. Please try /books'], 404);
         }
-        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'language', 'summary')->where('testament', '=', $test)->where('language', '=', $lang)->get();
 
-        return response()->json($data, 200);
+        $header_footer  = $this->getHeaderFooter();
+        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'language', 'summary')->where('testament', '=', $test)->where('language', '=', $lang)->get();
+        $result         = array(
+            'header_footer' => $header_footer,
+            'data'          => $data
+        );
+        return response()->json($result, 200);
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $lang
+     * @return \Illuminate\Http\Response
+     */
+    public function getHeaderFooter() {
+        
+        $lang = DB::table('languages')->select('language', 'encode', 'country')->get();
+        $books = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
+        $result = array(
+            'header' => array(
+                'lang' => $lang,
+            ),
+            'footer' => array(
+                'books' => $books
+            )
+        );
+
+        return $result;
     }
 }
