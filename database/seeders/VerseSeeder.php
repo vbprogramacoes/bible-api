@@ -25,9 +25,10 @@ class VerseSeeder extends Seeder
             $version_exte       = explode('.', $langu_count_veri[2]);
             $language           = $langu_count_veri[0];
             if ($language == 'portugues') {
+
                 $language = 'portuguese';
             }
-            $lang               = DB::table('languages')->select('id')->where('language', '=', $language)->first();
+            
             $versabr            = $version_exte[0];
             $resverseab         = DB::table('versions')->select('id')->where('abbreviation', '=', $versabr)->first();
             $id_version         = $resverseab->id;
@@ -54,7 +55,6 @@ class VerseSeeder extends Seeder
                         $data['chapter']    = $chapnum;
                         $data['num']        = $num;
                         $data['content']    = $content;
-                        $data['id_lang']    = $lang->id;
                         DB::table('verses')->insert(
                             $data
                         );
@@ -86,7 +86,6 @@ class VerseSeeder extends Seeder
                         $data['chapter']    = $chapnum;
                         $data['num']        = $num;
                         $data['content']    = $content;
-                        $data['id_lang']    = $lang->id;
                         DB::table('verses')->insert(
                             $data
                         );

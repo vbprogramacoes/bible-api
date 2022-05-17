@@ -696,8 +696,6 @@ class BookSeeder extends Seeder
             
             $data['abbreviation_url']   = $abbr;
             $data['summary']    = $summary[$abbr][$data['language']];
-            $lang               = DB::table('languages')->select('id')->where('language', '=', $data['language'])->first();
-            $data['id_lang']    = $lang->id;
             unset($data['language']);
             DB::table('books')->insert(
                 $data

@@ -21,7 +21,6 @@ class CreateVersesTable extends Migration
             $table->bigInteger('id_version')->length(20);
             $table->bigInteger('id_book')->length(20);
             $table->smallInteger('chapter');
-            $table->bigInteger('id_lang')->length(20);
             $table->smallInteger('num');
             $table->text('content');
         });

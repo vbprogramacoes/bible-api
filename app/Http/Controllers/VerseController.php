@@ -25,21 +25,7 @@ class VerseController extends Controller
             , 404);
         }
 
-        if (!DB::table('languages')->where('language', '=', $language)->exists()) {
-            return response()->json([
-                'message' => "This language don't exist. Please try /languages!"]
-            , 404);
-        }
-
-        $lang       = DB::table('languages')->where('language', '=', $language)->first();
-        $id_lang    = $lang->id;
-        if (!DB::table('versions')->where('id_lang', '=', $id_lang)->where('abbreviation', '=', $version_abbreviation)->exists()) {
-            return response()->json([
-                'message' => "This version don't exist. Please try /versions!"]
-            , 404);
-        }
-
-        if (!DB::table('books')->where('abbreviation_url', '=', $book_abbreviation_url)->where('id_lang', '=', $id_lang)->exists()) {
+        if (!DB::table('books')->where('abbreviation_url', '=', $book_abbreviation_url)->exists()) {
             return response()->json([
                 'message' => "This book don't exist. Please try /books!"]
             , 404);
@@ -50,14 +36,15 @@ class VerseController extends Controller
         
         $book = DB::table('books')->where('abbreviation_url', '=', $book_abbreviation_url)->first();
         if($book->chapters < $chapter) {
+
             return response()->json([
                 'message' => "This chapter don't exist for this book. Please try /books!"]
             , 404);
         }
-        $id_book = $book->id;
 
+        $id_book = $book->id;
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->get();
+        $data = DB::table('verses')->select('num', 'content')->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data
@@ -77,28 +64,20 @@ class VerseController extends Controller
      */
     public function versesByLanguageAbbreviationUrlChpaterVerse(Request $request, $language = '', $version_abbreviation = '', $book_abbreviation_url = '', $chapter = '', $verse = '')
     {
-        
+
         if ($language == '' || $version_abbreviation =='' || $book_abbreviation_url == '' || ($chapter == '' && $chapter > 0) || ($verse == '' && $verse > 0)) {
             return response()->json([
                 'message' => "You not set language, version, book abbreviation url or chapter."]
             , 404);
         }
-
-        if (!DB::table('languages')->where('language', '=', $language)->exists()) {
-            return response()->json([
-                'message' => "This language don't exist. Please try /languages!"]
-            , 404);
-        }
-
-        $lang       = DB::table('languages')->where('language', '=', $language)->first();
-        $id_lang    = $lang->id;
-        if (!DB::table('versions')->where('id_lang', '=', $id_lang)->where('abbreviation', '=', $version_abbreviation)->exists()) {
+        
+        if (!DB::table('versions')->where('language', '=', $language)->where('abbreviation', '=', $version_abbreviation)->exists()) {
             return response()->json([
                 'message' => "This version don't exist. Please try /versions!"]
             , 404);
         }
 
-        if (!DB::table('books')->where('abbreviation_url', '=', $book_abbreviation_url)->where('id_lang', '=', $id_lang)->exists()) {
+        if (!DB::table('books')->where('abbreviation_url', '=', $book_abbreviation_url)->exists()) {
             return response()->json([
                 'message' => "Thys book don't exist. Please try /books!"]
             , 404);
@@ -115,14 +94,14 @@ class VerseController extends Controller
         }
 
         $id_book = $book->id;
-        if(!DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '=', $verse)->exists()) {
+        if(!DB::table('verses')->select('num', 'content')->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '=', $verse)->exists()) {
             return response()->json([
                 'message' => "This verse don't exist for this book. Please try /books!"]
             , 404);
         }
 
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('verses')->select('num', 'content')->where('id_lang', '=', $id_lang)->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '=', $verse)->get();
+        $data = DB::table('verses')->select('num', 'content')->where('id_version', '=', $id_version)->where('id_book', '=', $id_book)->where('chapter', '=', $chapter)->where('num', '=', $verse)->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data

@@ -19,11 +19,11 @@ class CreateBooksTable extends Migration
             $table->engine      = 'InnoDB';
             $table->id();
             $table->string('book', 100);
+            $table->string('language', 250);
             $table->string('abbreviation', 3);
             $table->string('abbreviation_url', 3);
             $table->smallInteger('chapters');
             $table->string('testament', 5);
-            $table->string('id_lang', 50);
             $table->text('summary')->default(NULL);
         });
     }

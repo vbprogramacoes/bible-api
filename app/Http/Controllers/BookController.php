@@ -113,7 +113,7 @@ class BookController extends Controller
         }
 
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'language', 'summary')->where('testament', '=', $test)->where('language', '=', $lang)->get();
+        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'summary')->where('testament', '=', $test)->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data
