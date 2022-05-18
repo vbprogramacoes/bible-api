@@ -16,7 +16,7 @@ class LanguageController extends Controller
     {
         
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('languages')->select('language', 'encode', 'country')->get();
+        $data = DB::table('versions')->select('language')->groupByRaw('language')->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data
@@ -39,7 +39,7 @@ class LanguageController extends Controller
                 ['message' => 'You not set language. Please try /languages!'], 
             404);
         }
-        $data = DB::table('languages')->select('language', 'encode', 'country')->where('language', '=', $language)->get();
+        $data = DB::table('versions')->select('language')->groupByRaw('language')->get();
         if (count($data) == 0) {
 
             return response()->json(
