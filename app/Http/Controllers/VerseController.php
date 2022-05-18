@@ -195,7 +195,6 @@ class VerseController extends Controller
      */
     public function getHeaderFooter() {
         
-        $lang = DB::table('languages')->select('language', 'encode', 'country')->get();
         $books = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->get();
         $result = array(
             'header' => array(
