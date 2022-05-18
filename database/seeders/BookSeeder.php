@@ -696,7 +696,6 @@ class BookSeeder extends Seeder
             
             $data['abbreviation_url']   = $abbr;
             $data['summary']    = $summary[$abbr][$data['language']];
-            unset($data['language']);
             DB::table('books')->insert(
                 $data
             );
