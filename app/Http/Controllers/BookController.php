@@ -40,25 +40,17 @@ class BookController extends Controller
             , 404);
         }
         
-        //VERIFY LANGUAGE EXIST
-        if (!DB::table('languages')->where('language', '=', $language)->exists()) {
+       //VERIFIY IF THE LANGUAGE EXIST
+       if (!DB::table('books')->where('language', '=', $language)->exists()) {
 
             return response()->json(
                 ['message' => 'Don\'t have books for this language. Please try /languages or /versions']
             , 404);
         }
 
-        $language = DB::table('languages')->select('id', 'language', 'encode', 'country')->where('language', '=', $language)->first();
-        $id_lang = $language->id;
-        if (!DB::table('books')->where('id_lang', '=', $id_lang)->exists()) {
-
-            return response()->json(
-                ['message' => 'Don\'t have books for this language. Please try /languages or /versions']
-            , 404);
-        }
-
+        //SEARCH BOOK BY LANGUAGE
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->where('id_lang', '=', $id_lang)->get();
+        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'testament', 'summary')->where('language', '=', $language)->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data
@@ -112,8 +104,12 @@ class BookController extends Controller
                 'message' => 'You not set testament or language. Please try /books'], 404);
         }
 
+        if (!DB::table('books')->where('testament', '=', $test)->where('language', '=', $lang)->exists()) {
+            return response()->json([
+                'message' => 'Dont have books fot this testament and languages. Please try /books'], 404);
+        }
         $header_footer  = $this->getHeaderFooter();
-        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'summary')->where('testament', '=', $test)->get();
+        $data = DB::table('books')->select('book', 'abbreviation', 'abbreviation_url', 'chapters', 'summary')->where('testament', '=', $test)->where('language', '=', $lang)->get();
         $result         = array(
             'header_footer' => $header_footer,
             'data'          => $data
