@@ -19,7 +19,6 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
-        <meta name="google-site-verification" content="Lyuz634eCTqD4Pgb7rwKpLeAjARAiPzoAgXP6woJTwE" />
     </head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
